@@ -1,6 +1,6 @@
 #include <memory>
 #include <JuceHeader.h>
-#include "settings.h"
+#include "settings.hpp"
 #include <codecvt>
 #include <fstream>
 

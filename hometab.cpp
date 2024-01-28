@@ -1,7 +1,7 @@
 #include "hometab.hpp"
 #include "applookandfeel.hpp"
 
-HomeTab::HomeTab() {
+HomeTab::HomeTab(Component &parent) : parent_{parent} {
 	//==========================================================================
 	// Set up NDI Source selector
 	// ndiSourceLabel.setFont(AppLookAndFeel::defaultFontSize);
@@ -86,7 +86,7 @@ void HomeTab::buttonClicked(Button *button) {
 		String newOutput = ndiOutput.getText();
 
 		if (newOutput.isEmpty())
-			newOutput = "NDI Virtual Sound";
+			newOutput = defaultOut;
 
 		// bool useLocalAudio = localAudioCheckbox.getToggleState();
 
@@ -101,11 +101,9 @@ void HomeTab::buttonClicked(Button *button) {
 		// driver->onAcceptClick(newSource.toStdString(),
 		// newOutput.toStdString(), 					  useLocalAudio);
 
-		// Signal UI termination
-		JUCEApplicationBase::quit();
+		parent_.setVisible(false);
 	} else if (button == &cancelButton) {
-		// Signal UI termination
-		JUCEApplicationBase::quit();
+		parent_.setVisible(false);
 	}
 }
 

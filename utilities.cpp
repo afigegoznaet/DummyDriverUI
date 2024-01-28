@@ -3,7 +3,7 @@
 #include "windows.h"
 #endif // _WINDOWS
 
-#include "utilities.h"
+#include "utilities.hpp"
 using namespace std::chrono_literals;
 
 // https://stackoverflow.com/questions/26895428/how-do-i-parse-an-iso-8601-date-with-optional-milliseconds-to-a-struct-tm-in-c
