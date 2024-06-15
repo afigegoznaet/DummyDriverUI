@@ -2,6 +2,7 @@
 #include <JuceHeader.h>
 #include <future>
 #include "AboutTab.hpp"
+#include "AppLookAndFeel.hpp"
 #include "hometab.hpp"
 #include "AppSysTrayComponent.hpp"
 #include "LicensePanel.hpp"
@@ -20,8 +21,6 @@ public:
 	void setApplicationUnlocked(bool shouldBeUnlocked);
 
 private:
-	//==========================================================================
-	void updateNdiSources() { homeTab.updateNdiSources(); }
 	void saveProgramSettings();
 	void loadProgramSettings();
 

@@ -4,13 +4,13 @@
 HomeTab::HomeTab(Component &parent) : parent_{parent} {
 	//==========================================================================
 	// Set up NDI Source selector
-	// ndiSourceLabel.setFont(AppLookAndFeel::defaultFontSize);
-	// ndiSourceLabel.setJustificationType(Justification::topLeft);
-	// addAndMakeVisible(ndiSourceLabel);
+	ndiSourceLabel.setFont(AppLookAndFeel::defaultFontSize);
+	ndiSourceLabel.setJustificationType(Justification::topLeft);
+	addAndMakeVisible(ndiSourceLabel);
 
-	// ndiSource.setTextWhenNothingSelected("Select the NDI source");
-	// ndiSource.setTextWhenNoChoicesAvailable("No NDI sources available");
-	// addAndMakeVisible(ndiSource);
+	ndiSourceCombo.setTextWhenNothingSelected("Select the NDI source");
+	ndiSourceCombo.setTextWhenNoChoicesAvailable("No NDI sources available");
+	addAndMakeVisible(ndiSourceCombo);
 
 
 	//==========================================================================
@@ -25,11 +25,8 @@ HomeTab::HomeTab(Component &parent) : parent_{parent} {
 	ndiOutput.setFont(AppLookAndFeel::defaultFontSize);
 	ndiOutput.setTextToShowWhenEmpty("Type the NDI OUT source name",
 									 juce::Colours::grey);
-	//	ndiOutput.setText(driver->getNDIOutputName(), dontSendNotification);
+	// ndiOutput.setText(finder->getNDIOutputName(), dontSendNotification);
 	addAndMakeVisible(ndiOutput);
-	// localAudioCheckbox.setToggleState(driver->getUseLocalAudio(),
-	// 								  dontSendNotification);
-	// addAndMakeVisible(localAudioCheckbox);
 
 	//==========================================================================
 	// Set up buttons
@@ -38,6 +35,7 @@ HomeTab::HomeTab(Component &parent) : parent_{parent} {
 
 	cancelButton.addListener(this);
 	addAndMakeVisible(cancelButton);
+	finder_.setListener(this);
 }
 
 //==============================================================================
@@ -64,8 +62,8 @@ void HomeTab::resized() {
 
 	auto settingsBounds = ndiSettings.reduced(padding / 2);
 
-	// ndiSourceLabel.setBounds(settingsBounds.removeFromTop(labelHeight));
-	// ndiSource.setBounds(settingsBounds.removeFromTop(buttonHeight));
+	ndiSourceLabel.setBounds(settingsBounds.removeFromTop(labelHeight));
+	ndiSourceCombo.setBounds(settingsBounds.removeFromTop(buttonHeight));
 
 	ndiOutputLabel.setBounds(settingsBounds.removeFromTop(labelHeight));
 	ndiOutput.setBounds(settingsBounds.removeFromTop(buttonHeight));
@@ -88,18 +86,16 @@ void HomeTab::buttonClicked(Button *button) {
 		if (newOutput.isEmpty())
 			newOutput = defaultOut;
 
-		// bool useLocalAudio = localAudioCheckbox.getToggleState();
-
 		String oldOuptut = ""; // driver->getNDIOutputName();
 
-		// String rawNewSource =
-		// 	ndiSource.getItemText(ndiSource.getSelectedItemIndex());
+		String rawNewSource =
+			ndiSourceCombo.getItemText(ndiSourceCombo.getSelectedItemIndex());
 
-		// String newSource = rawNewSource.replace("(" + oldOuptut + ")",
-		// 										"(" + newOutput + ")", false);
+		String newSource = rawNewSource.replace("(" + oldOuptut + ")",
+												"(" + newOutput + ")", false);
 
 		// driver->onAcceptClick(newSource.toStdString(),
-		// newOutput.toStdString(), 					  useLocalAudio);
+		// newOutput.toStdString());
 
 		parent_.setVisible(false);
 	} else if (button == &cancelButton) {
@@ -107,27 +103,26 @@ void HomeTab::buttonClicked(Button *button) {
 	}
 }
 
-//==============================================================================
-void HomeTab::updateNdiSources() {
-	// MessageManagerLock msgLock;
+void HomeTab::sourceListChanged(std::vector<std::string> updatedSourcesMap) {
+	MessageManagerLock msgLock;
 
-	// ndiSource.clear(NotificationType::dontSendNotification);
+	ndiSourceCombo.clear(NotificationType::dontSendNotification);
 
-	// auto &availableInputs = driver->getNDIAvailableInputs();
 
-	// for (const auto &input : availableInputs)
-	// 	ndiSource.addItem(input, ndiSource.getNumItems() + 1);
+	for (const auto &input : updatedSourcesMap)
+		ndiSourceCombo.addItem(input, ndiSourceCombo.getNumItems() + 1);
 
-	// const auto selectedPosition =
-	// 	std::find(availableInputs.cbegin(), availableInputs.cend(),
-	// 			  driver->getNDIInputName());
+	String oldSource =
+		ndiSourceCombo.getItemText(ndiSourceCombo.getSelectedItemIndex());
+	const auto selectedPosition = std::find(
+		updatedSourcesMap.cbegin(), updatedSourcesMap.cend(), oldSource);
 
-	// if (selectedPosition == availableInputs.cend()) {
-	// 	ndiSource.setSelectedId(0);
-	// 	return;
-	// }
+	if (selectedPosition == updatedSourcesMap.cend()) {
+		ndiSourceCombo.setSelectedId(0);
+		return;
+	}
 
-	// auto selectedIndex =
-	// 	std::distance(availableInputs.cbegin(), selectedPosition);
-	// ndiSource.setSelectedItemIndex(static_cast<int>(selectedIndex));
+	auto selectedIndex =
+		std::distance(updatedSourcesMap.cbegin(), selectedPosition);
+	ndiSourceCombo.setSelectedItemIndex(static_cast<int>(selectedIndex));
 }

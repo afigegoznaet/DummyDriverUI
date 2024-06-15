@@ -53,7 +53,7 @@ public:
 	//==========================================================================
 	// Custom Colour IDs
 	enum ColourIds {
-		frontTabColourId = 1,
+		frontTabColourId,
 		tabColourId,
 		frontTabTextColourId,
 		tabTextColourId,
@@ -100,7 +100,7 @@ public:
 	// AlertWindow painting
 	void drawAlertBox(Graphics &g, AlertWindow &alert,
 					  const juce::Rectangle<int> &textArea,
-					  TextLayout				 &textLayout) override;
+					  TextLayout &				  textLayout) override;
 	Array<int>
 		 getWidthsForTextButtons(AlertWindow &,
 								 const Array<TextButton *> &buttons) override;
@@ -112,7 +112,7 @@ public:
 	//==========================================================================
 	// Custom component drawing
 	static void
-	drawCustomPanelBackground(Graphics					 &g,
+	drawCustomPanelBackground(Graphics &				  g,
 							  const juce::Rectangle<int> &panelArea);
 
 private:

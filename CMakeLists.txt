@@ -19,7 +19,7 @@ find_path(NDI_ADVANCED_INCLUDE_DIRS "Processing.NDI.Advanced.h"
     REQUIRED
 )
 
-find_library(NDI_ADVANCED_LIB "Processing.NDI.Lib.Advanced.x64"
+find_library(NDI_ADVANCED_LIB "Processing.NDI.Lib.Advanced.x64.lib"
 	PATHS "C:/Program Files/NDI/NDI 5 Advanced SDK/Lib/x64"
 	REQUIRED
 )
@@ -36,6 +36,10 @@ juce_add_gui_app(${PROJECT_NAME}
 
 target_compile_definitions(${PROJECT_NAME}
         PRIVATE
+        JUCE_PLUGINHOST_LADSPA=1
+        JUCE_PLUGINHOST_LV2=1
+        JUCE_PLUGINHOST_VST3=1
+        JUCE_PLUGINHOST_AU=1
         # JUCE_WEB_BROWSER and JUCE_USE_CURL would be on by default, but you might not need them.
         JUCE_WEB_BROWSER=0  # If you remove this, add `NEEDS_WEB_BROWSER TRUE` to the `juce_add_gui_app` call
         JUCE_USE_CURL=1     # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_gui_app` call
@@ -49,27 +53,30 @@ target_sources(${PROJECT_NAME}
         #RestCall.cpp
         #CtrlPanel.hpp
         #CtrlPanel.cpp
-        Settings.hpp
-        Settings.cpp
-        Utilities.hpp
-        Utilities.cpp
-        MainWindow.hpp
-        MainWindow.cpp
-        AppLookAndFeel.hpp
-        AppLookAndFeel.cpp
-        SearchBox.hpp
-        SearchBox.cpp
-        HomeTab.hpp
-        HomeTab.cpp
-        AboutTab.hpp
+		AboutTab.hpp
+		main.cpp
         AboutTab.cpp
-	main.cpp
-        AppSysTrayComponent.hpp
+        AppLookAndFeel.cpp
+        AppLookAndFeel.hpp
         AppSysTrayComponent.cpp
-        LicensePanel.hpp
-        LicensePanel.cpp
-        LicenseCheckComponent.hpp
+        AppSysTrayComponent.hpp
+        HomeTab.cpp
+        HomeTab.hpp
         LicenseCheckComponent.cpp
+        LicenseCheckComponent.hpp
+        LicensePanel.cpp
+        LicensePanel.hpp
+        MainWindow.cpp
+        MainWindow.hpp
+		NDISourceFinder.cpp
+		NDISourceFinder.hpp
+        SearchBox.cpp
+        SearchBox.hpp
+        Settings.cpp
+        Settings.hpp
+        Utilities.cpp
+        Utilities.hpp
+		LicenseConfig.hpp
 )
 
 
@@ -88,6 +95,9 @@ target_link_libraries(${TARGET}
         juce::juce_audio_basics
         juce::juce_audio_devices
         juce::juce_gui_extra
+        juce::juce_audio_utils
+        juce::juce_cryptography
+        juce::juce_dsp
         ${NDI_ADVANCED_LIB}
 
     PUBLIC

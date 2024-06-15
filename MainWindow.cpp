@@ -1,6 +1,6 @@
 #include "MainWindow.hpp"
 #include "Assets.hpp"
-#include "applookandfeel.hpp"
+#include "AppLookAndFeel.hpp"
 MainWindow::MainWindow(Component &parent) : homeTab(parent), sysTray{parent} {
 	loadProgramSettings();
 
@@ -50,24 +50,6 @@ MainWindow::MainWindow(Component &parent) : homeTab(parent), sysTray{parent} {
 	setSize(width, height);
 
 	//==========================================================================
-	// auto waiterLambda = [this] {
-	// 	while (!shutdown) {
-	// 		std::unique_lock<std::mutex> lock(cv_m);
-	// 		using namespace std::chrono_literals;
-	// 		cv.wait_for(lock, 100ms,
-	// 					[this] { return shutdown || sourceChanged; });
-
-	// 		if (sourceChanged) {
-	// 			updateNdiSources();
-	// 			sourceChanged = false;
-	// 		}
-	// 	}
-	// };
-
-	updateNdiSources();
-	// sourceWaiter = std::async(std::launch::async, waiterLambda);
-
-	//==========================================================================
 	// Lock the app if no license is active
 	bool isApplicationLicensed = true; // gc->driver->isLicenseActive();
 	setApplicationUnlocked(isApplicationLicensed);
@@ -100,6 +82,7 @@ MainWindow::~MainWindow() {
 	if (sourceWaiter.valid())
 		sourceWaiter.get();
 	saveProgramSettings();
+	setLookAndFeel(nullptr);
 }
 
 //==============================================================================
