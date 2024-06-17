@@ -3,7 +3,7 @@
 #include "windows.h"
 #endif // _WINDOWS
 
-#include "utilities.hpp"
+#include "Utilities.hpp"
 using namespace std::chrono_literals;
 
 // https://stackoverflow.com/questions/26895428/how-do-i-parse-an-iso-8601-date-with-optional-milliseconds-to-a-struct-tm-in-c
@@ -42,6 +42,7 @@ bool isDatePastToday(std::string date) {
 }
 
 std::string getMachineUUID() {
+	#ifdef _WINDOWS
 	HKEY key = 0;
 	LONG lResult =
 		RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Cryptography",
@@ -59,6 +60,7 @@ std::string getMachineUUID() {
 			return cstrMachineGuid.get();
 		}
 	}
+#endif
 	return "";
 }
 

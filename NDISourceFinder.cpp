@@ -40,7 +40,14 @@ std::string getHostname() {
 }
 
 #endif
-
+#ifdef __APPLE__
+#include <unistd.h>
+static std::string getHostname() {
+	char hostname[1024] = {};
+	gethostname(hostname, 1024);
+	return hostname;
+}
+#endif
 
 NDISourceFinder::NDISourceFinder() {
 	localhost = getHostname();
@@ -54,7 +61,7 @@ NDISourceFinder::NDISourceFinder() {
 	runnerThread = std::thread{[this]() {
 		while (!stopThread) {
 			auto x = std::chrono::steady_clock::now()
-					 + std::chrono::milliseconds(10000);
+					 + std::chrono::milliseconds(1000);
 			run();
 			std::this_thread::sleep_until(x);
 		}

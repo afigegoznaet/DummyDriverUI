@@ -9,12 +9,15 @@
 */
 
 #pragma once
-#include <Processing.NDI.Advanced.h>
 #include <mutex>
 #include <vector>
+#include <thread>
 #ifdef LINUX
+#include <stddef.h>
 #include <unordered_map>
 #endif
+
+#include <Processing.NDI.Advanced.h>
 
 struct NDISourceFinder {
 	NDISourceFinder();
