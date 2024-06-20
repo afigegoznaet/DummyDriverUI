@@ -54,6 +54,7 @@ Thumbs.db
 
 #cmake build dirs
 build-*/
+build/**
 
 #cmake autogen
 CMakeLists.txt.user*

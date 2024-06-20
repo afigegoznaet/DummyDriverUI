@@ -40,7 +40,7 @@ std::string getHostname() {
 }
 
 #endif
-#ifdef __APPLE__
+#if defined __APPLE__ || defined __linux__
 #include <unistd.h>
 static std::string getHostname() {
 	char hostname[1024] = {};
@@ -52,6 +52,8 @@ static std::string getHostname() {
 NDISourceFinder::NDISourceFinder() {
 	localhost = getHostname();
 
+	std::cout << NDIlib_initialize() << std::endl;
+	std::cout << NDIlib_is_supported_CPU() << std::endl;
 	NDIlib_find_create_t findCreateSpecs;
 	findCreateSpecs.show_local_sources = true;
 	findCreateSpecs.p_groups = nullptr;
@@ -73,13 +75,16 @@ NDISourceFinder::~NDISourceFinder() {
 	runnerThread.join();
 	if (ndiFinderInstance_)
 		NDIlib_find_destroy(ndiFinderInstance_);
+
+	NDIlib_destroy();
 }
 
 void NDISourceFinder::run() {
 
 	std::vector<std::string> newSourceSet;
 
-	uint32_t				  numSources = 0;
+	uint32_t numSources = 0;
+	NDIlib_find_wait_for_sources(ndiFinderInstance_, 1000);
 	const NDIlib_source_v2_t *ndiSourcesPtr =
 		NDIlib_find_get_current_sources_v2(ndiFinderInstance_, &numSources);
 

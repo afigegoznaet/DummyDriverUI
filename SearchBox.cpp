@@ -1,10 +1,10 @@
-#include "searchbox.hpp"
-#include "applookandfeel.hpp"
+#include "SearchBox.hpp"
+#include "AppLookAndFeel.hpp"
 
 //==============================================================================
 // SearchBox painting
 static void drawSearchBox(Graphics &g, int width, int height, bool, int, int,
-						  int, int, SearchBox &		  box) {
+						  int, int, SearchBox		 &box) {
 	Rectangle<int> boxBounds(0, 0, width, height);
 
 	g.setColour(box.findColour(ComboBox::backgroundColourId));
@@ -563,7 +563,7 @@ void SearchBox::mouseUp(const MouseEvent &e2) {
 	}
 }
 
-void SearchBox::mouseWheelMove(const MouseEvent &		e,
+void SearchBox::mouseWheelMove(const MouseEvent		   &e,
 							   const MouseWheelDetails &wheel) {
 	if (!menuActive && scrollWheelEnabled && e.eventComponent == this
 		&& wheel.deltaY != 0.0f) {

@@ -1,5 +1,5 @@
 #pragma once
-#include "applookandfeel.hpp"
+#include "AppLookAndFeel.hpp"
 #include <JuceHeader.h>
 
 class SearchBox;
@@ -7,7 +7,7 @@ class SearchBox;
 class SearchBoxPopup : public Component {
 public:
 	explicit SearchBoxPopup(SearchBox &popupOwner);
-	~SearchBoxPopup();
+	~SearchBoxPopup() override;
 
 	//==========================================================================
 	void resized() override;

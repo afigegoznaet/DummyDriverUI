@@ -2,8 +2,8 @@
 #include <JuceHeader.h>
 #include <future>
 #include "AboutTab.hpp"
-#include "AppLookAndFeel.hpp"
-#include "hometab.hpp"
+// #include "AppLookAndFeel.hpp"
+#include "HomeTab.hpp"
 #include "AppSysTrayComponent.hpp"
 #include "LicensePanel.hpp"
 #include "LicenseCheckComponent.hpp"

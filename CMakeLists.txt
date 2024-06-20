@@ -29,6 +29,13 @@ if(APPLE)
         PATHS "/System/Volumes/Data/Library/NDI Advanced SDK for Apple/lib/macOS" REQUIRED )
 endif()
 
+if(LINUX)
+	find_path(NDI_ADVANCED_INCLUDE_DIRS "Processing.NDI.Advanced.h"
+		HINTS "~/workspace/NDI Advanced SDK for Linux/include" REQUIRED )
+	find_library(NDI_ADVANCED_LIB "ndi"
+		PATHS "~/workspace/NDI Advanced SDK for Linux/lib/x86_64-linux-gnu" REQUIRED )
+endif()
+
 find_package(JUCE CONFIG REQUIRED)
 
 juce_add_gui_app(${PROJECT_NAME}
@@ -54,10 +61,10 @@ JUCE_APPLICATION_VERSION_STRING="$<TARGET_PROPERTY:${PROJECT_NAME},JUCE_VERSION>
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-    #RestCall.hpp
-    #RestCall.cpp
-    #CtrlPanel.hpp
-    #CtrlPanel.cpp
+	RestCall.hpp
+	RestCall.cpp
+	CtrlPanel.hpp
+	CtrlPanel.cpp
     AboutTab.hpp
     main.cpp
     AboutTab.cpp
@@ -77,8 +84,8 @@ target_sources(${PROJECT_NAME}
     NDISourceFinder.hpp
     SearchBox.cpp
     SearchBox.hpp
-    #Settings.cpp
-    #Settings.hpp
+	Settings.cpp
+	Settings.hpp
     Utilities.cpp
     Utilities.hpp
     LicenseConfig.hpp
@@ -101,8 +108,9 @@ target_link_libraries(${TARGET}
     juce::juce_gui_extra
     juce::juce_audio_utils
     juce::juce_cryptography
-    juce::juce_dsp
-    ${NDI_ADVANCED_LIB}
+	juce::juce_dsp
+	${NDI_ADVANCED_LIB}
+	curl
 
     PUBLIC
     juce::juce_recommended_config_flags

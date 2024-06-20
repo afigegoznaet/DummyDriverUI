@@ -1,5 +1,5 @@
-#include "abouttab.hpp"
-#include "applookandfeel.hpp"
+#include "AboutTab.hpp"
+#include "AppLookAndFeel.hpp"
 #include "Assets.hpp"
 
 AboutTab::AboutTab() {

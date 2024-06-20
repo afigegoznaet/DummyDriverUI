@@ -1,5 +1,5 @@
-#include "hometab.hpp"
-#include "applookandfeel.hpp"
+#include "HomeTab.hpp"
+#include "AppLookAndFeel.hpp"
 
 HomeTab::HomeTab(Component &parent) : parent_{parent} {
 	//==========================================================================

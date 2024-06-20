@@ -1,7 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include <NDISourceFinder.hpp>
-#include "searchbox.hpp"
+#include "SearchBox.hpp"
 
 class HomeTab : public Component,
 				public Button::Listener,
@@ -33,7 +33,7 @@ private:
 	TextButton cancelButton{"CANCEL"};
 
 	NDISourceFinder finder_{};
-	Component &		parent_;
+	Component	   &parent_;
 
 	//==========================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HomeTab)

@@ -13,10 +13,11 @@
 #include <vector>
 #include <thread>
 #ifdef LINUX
-#include <stddef.h>
-#include <unordered_map>
+#include <string>
+#include <atomic>
 #endif
-
+#undef NULL
+#define NULL nullptr
 #include <Processing.NDI.Advanced.h>
 
 struct NDISourceFinder {
@@ -39,7 +40,7 @@ private:
 
 	std::string localhost{};
 
-	Listener * sourceListUpdatedListener_{};
+	Listener  *sourceListUpdatedListener_{};
 	std::mutex sourceListMtx_;
 
 	std::atomic_bool stopThread{};
