@@ -4,15 +4,15 @@
 #include <functional>
 
 struct RESTCallResponse {
-	int			errorCode;
-	char		error[1024];
-	std::string body;
-	long		httpCode;
+	int			errorCode{};
+	std::string error;
+	std::string license;
+	std::string expiry;
 };
 
 RESTCallResponse validate_license_key(const std::string license_key,
 									  const std::string machineFingerprint);
-RESTCallResponse activate_machine(const std::string licensID,
+RESTCallResponse activate_machine(const std::string licenseID,
 								  const std::string machineFingerprint);
 void			 activation_logic(
 				const std::string license_key, const std::string machineFingerprint,

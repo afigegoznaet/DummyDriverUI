@@ -1,5 +1,7 @@
 #include "LicensePanel.hpp"
 #include "AppLookAndFeel.hpp"
+#include "RestCall.hpp"
+#include "Utilities.hpp"
 LicensePanel::LicensePanel() {
 	//==========================================================================
 	// Set up UI elements
@@ -84,8 +86,12 @@ void LicensePanel::buttonClicked(Button *button) {
 	if (button == &activateButton) {
 		auto input = licenseEditor.getText().toUpperCase();
 
+		// std::string machineFingerprint = getMachineUUID();
+		// auto		resp =
+		// 	validate_license_key(input.toStdString(), machineFingerprint);
+
 		if (onLicenseActivate != nullptr)
-			onLicenseActivate();
+			onLicenseActivate(input.toStdString());
 
 		setVisible(false);
 		// driver->onActivateClick(input.toStdString());
@@ -95,7 +101,7 @@ void LicensePanel::buttonClicked(Button *button) {
 		auto input = licenseEditor.getText().toUpperCase();
 
 		if (onLicenseActivate != nullptr)
-			onLicenseActivate();
+			onLicenseActivate("");
 
 		setVisible(false);
 		// driver->onDeactivateClick();
@@ -112,4 +118,9 @@ void LicensePanel::show() {
 	// 	licenseEditor.clear();
 
 	setVisible(true);
+}
+
+
+void LicensePanel::setLicense(std::string license) {
+	licenseEditor.setText(license);
 }

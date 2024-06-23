@@ -10,16 +10,17 @@ public:
 	void paint(Graphics &g) override;
 	void buttonClicked(Button *buttonThatWasClicked) override;
 	void show();
+	void setLicense(std::string license);
 
 	//==========================================================================
-	std::function<void()> onLicenseActivate{nullptr};
+	std::function<void(std::string)> onLicenseActivate{nullptr};
 
 private:
 	Label	   panelTitleLabel{"licensePanelTitle", "License key"};
 	TextEditor licenseEditor;
 	Label	   copyrightInfo{"", CharPointer_UTF8("Avsono Inc. "
-													   "\xc2\xa9"
-													   "2021 - 2024")};
+											  "\xc2\xa9"
+											  "2021 - 2024")};
 
 	TextButton activateButton{"ACTIVATE"};
 	TextButton deactivateButton{"DEACTIVATE"};

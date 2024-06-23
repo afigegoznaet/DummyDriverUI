@@ -1,12 +1,9 @@
 #pragma once
 
 #include <string>
-#include <iostream>
-#ifdef _WINDOWS
-#include "windows.h"
-#endif // _WINDOWS
+#include <atomic>
 
-struct ASIONDIConfig {
+struct LocalSettings {
 	bool			  licenseActive{};
 	bool			  useLocalAudio{};
 	std::string		  licenseKey;
@@ -19,12 +16,7 @@ struct ASIONDIConfig {
 	bool save();
 	bool load();
 
-	bool operator==(const ASIONDIConfig &o) {
+	bool operator==(const LocalSettings &o) {
 		return o.licenseKey == this->licenseKey;
 	}
-
-private:
-#ifdef _WINDOWS
-	std::string regGetStringValue(HKEY hKey, LPCSTR lpSubKey);
-#endif // _WINDOWS
 };

@@ -7,6 +7,10 @@
 #include "AppSysTrayComponent.hpp"
 #include "LicensePanel.hpp"
 #include "LicenseCheckComponent.hpp"
+#include "settings.hpp"
+
+
+#define ONLINE_CHECK_DAYS_INTERVAL 30
 
 class MainWindow : public Component {
 public:
@@ -21,8 +25,10 @@ public:
 	void setApplicationUnlocked(bool shouldBeUnlocked);
 
 private:
-	void saveProgramSettings();
-	void loadProgramSettings();
+	// void saveProgramSettings();
+	// void loadProgramSettings();
+
+	void checkLicenseExpired(std::string license);
 
 	//==========================================================================
 	std::future<void> sourceWaiter;
@@ -52,6 +58,8 @@ private:
 	//==========================================================================
 	TooltipWindow		tooltipWindow{nullptr, 700};
 	AppSysTrayComponent sysTray;
+
+	LocalSettings config;
 
 	//==========================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)

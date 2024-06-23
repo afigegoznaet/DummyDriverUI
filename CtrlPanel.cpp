@@ -1,10 +1,10 @@
 #include <future>
 #include <codecvt>
 
-#include "restcall.h"
+#include "RestCall.hpp"
 
-#include "utilities.h"
-#include "ctrlpanel.h"
+#include "Utilities.hpp"
+#include "CtrlPanel.hpp"
 #include <Processing.NDI.Advanced.h>
 
 void registerMetatypes() {

@@ -1,8 +1,16 @@
 #include "MainWindow.hpp"
 #include "Assets.hpp"
 #include "AppLookAndFeel.hpp"
+#include "RestCall.hpp"
+#include "Utilities.hpp"
+
+auto epoch_seconds = [] {
+	return duration_cast<std::chrono::milliseconds>(
+			   std::chrono::system_clock::now().time_since_epoch())
+		.count();
+};
+
 MainWindow::MainWindow(Component &parent) : homeTab(parent), sysTray{parent} {
-	loadProgramSettings();
 
 	//==========================================================================
 	// Set up UI elements
@@ -38,50 +46,60 @@ MainWindow::MainWindow(Component &parent) : homeTab(parent), sysTray{parent} {
 	licenseCheckScreen.setWantsKeyboardFocus(true);
 	addChildComponent(licenseCheckScreen);
 
+	config.load();
 	//  License activation panel
 	licensePanel.setAlwaysOnTop(true);
 	licensePanel.setWantsKeyboardFocus(true);
-	licensePanel.onLicenseActivate = [this] {
+	licensePanel.onLicenseActivate = [this](std::string license) {
 		licenseCheckScreen.setVisible(true);
+		checkLicenseExpired(license);
 	};
 	addChildComponent(licensePanel);
 
 	//  Initialise component size
 	setSize(width, height);
 
+
 	//==========================================================================
 	// Lock the app if no license is active
-	bool isApplicationLicensed = true; // gc->driver->isLicenseActive();
+	bool isApplicationLicensed =
+		config.licenseActive; // gc->driver->isLicenseActive();
 	setApplicationUnlocked(isApplicationLicensed);
 
 	if (!isApplicationLicensed)
 		licensePanel.show();
-
-	//==========================================================================
-	// Set up driver callbacks
-	// gc->driver->onLicenseCheck = [this](std::string message, std::string
-	// title, 									bool success) {
-	// 	{
-	// 		MessageManagerLock msgLock;
-
-	// 		if (success)
-	// 			setApplicationUnlocked(true);
-
-	// 		licenseCheckScreen.setVisible(false);
-	// 	}
-
-	// 	auto icon = success ? MessageBoxIconType::NoIcon
-	// 						: MessageBoxIconType::WarningIcon;
-
-	// 	AlertWindow::showMessageBoxAsync(icon, title, message);
-	// };
 }
+
+
+void MainWindow::checkLicenseExpired(std::string license) {
+	if (config.licenseActive && !(config.expiry.size() == 0)
+		&& !isDatePastToday(config.expiry)) {
+		config.licenseActive = false;
+	}
+
+	if (!config.licenseActive
+		|| epoch_seconds() > (config.lastOnlineKeyCheckSec
+							  + 60 * 60 * 24 * ONLINE_CHECK_DAYS_INTERVAL)) {
+		auto resp = validate_license_key(license, getMachineUUID());
+		if (resp.errorCode != 0) {
+			licenseCheckScreen.setVisible(false);
+			AlertWindow::showMessageBox(MessageBoxIconType::WarningIcon,
+										"Activation failed", resp.error);
+			return;
+		}
+		config.licenseActive = true;
+		config.expiry = resp.expiry;
+		config.lastOnlineKeyCheckSec = epoch_seconds();
+		config.save();
+	}
+}
+
 
 MainWindow::~MainWindow() {
 	shutdown = true;
 	if (sourceWaiter.valid())
 		sourceWaiter.get();
-	saveProgramSettings();
+	config.save();
 	setLookAndFeel(nullptr);
 }
 
@@ -128,6 +146,6 @@ void MainWindow::setApplicationUnlocked(bool shouldBeUnlocked) {
 }
 
 //==============================================================================
-void MainWindow::loadProgramSettings() {}
+// void MainWindow::loadProgramSettings() {}
 
-void MainWindow::saveProgramSettings() {}
+// void MainWindow::saveProgramSettings() {}

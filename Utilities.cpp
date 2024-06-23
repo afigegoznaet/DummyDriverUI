@@ -3,6 +3,7 @@
 #include "windows.h"
 #endif // _WINDOWS
 
+#include <JuceHeader.h>
 #include "Utilities.hpp"
 using namespace std::chrono_literals;
 
@@ -42,26 +43,8 @@ bool isDatePastToday(std::string date) {
 }
 
 std::string getMachineUUID() {
-	#ifdef _WINDOWS
-	HKEY key = 0;
-	LONG lResult =
-		RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Cryptography",
-					  0, KEY_READ, &key);
-
-	if (ERROR_SUCCESS == lResult) {
-		DWORD size = 0;
-		RegGetValueA(key, NULL, "MachineGuid", RRF_RT_REG_SZ, NULL, NULL,
-					 &size);
-
-		std::unique_ptr<char> cstrMachineGuid(new char[size]);
-		if (size) {
-			RegQueryValueExA(key, "MachineGuid", NULL, NULL,
-							 (BYTE *)cstrMachineGuid.get(), &size);
-			return cstrMachineGuid.get();
-		}
-	}
-#endif
-	return "";
+	return OnlineUnlockStatus::MachineIDUtilities::getUniqueMachineID()
+		.toStdString();
 }
 
 std::string getDriverDirectoryPath() {

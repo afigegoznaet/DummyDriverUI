@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)    # JUCE requirenment
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_compile_definitions(UI_NAME="Driver UI")
 add_compile_definitions(JUCE_MODAL_LOOPS_PERMITTED=1)
@@ -34,6 +34,7 @@ if(LINUX)
 		HINTS "~/workspace/NDI Advanced SDK for Linux/include" REQUIRED )
 	find_library(NDI_ADVANCED_LIB "ndi"
 		PATHS "~/workspace/NDI Advanced SDK for Linux/lib/x86_64-linux-gnu" REQUIRED )
+	set(CURL_LIB "curl")
 endif()
 
 find_package(JUCE CONFIG REQUIRED)
@@ -63,8 +64,8 @@ target_sources(${PROJECT_NAME}
     PRIVATE
 	RestCall.hpp
 	RestCall.cpp
-	CtrlPanel.hpp
-	CtrlPanel.cpp
+	#CtrlPanel.hpp
+	#CtrlPanel.cpp
     AboutTab.hpp
     main.cpp
     AboutTab.cpp
@@ -109,8 +110,9 @@ target_link_libraries(${TARGET}
     juce::juce_audio_utils
     juce::juce_cryptography
 	juce::juce_dsp
+	juce::juce_product_unlocking
 	${NDI_ADVANCED_LIB}
-	curl
+	${CURL_LIB}
 
     PUBLIC
     juce::juce_recommended_config_flags

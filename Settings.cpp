@@ -7,24 +7,11 @@
 #define ORG_NAME "Avsono"
 #define APP_NAME "NDI Virtual Soundcard"
 
-#ifdef _WINDOWS
-#include "windows.h"
-
-const char *szPrefsRegKey = "Software\\NDIVS";
-
-const char *szDeviceNDI = "Device NDI";
-const char *szDeviceNDIOut = "Device NDI out";
-const char *LicisActive = "LicisActive";
-const char *szExpiry = "Exp";
-const char *licKey = "Lic Key";
-#endif // _WINDOWS
-
-
 template <typename T>
 T byteswap(const T &val) {
 	constexpr size_t sizeInBytes = sizeof(T);
 	uint8_t			 newval[sizeInBytes];
-	const uint8_t	*byteRepr = reinterpret_cast<const uint8_t *>(&val);
+	const uint8_t *	 byteRepr = reinterpret_cast<const uint8_t *>(&val);
 	for (size_t i = 0; i < sizeInBytes; i++) {
 		newval[i] = byteRepr[sizeInBytes - i - 1];
 	}
@@ -33,9 +20,11 @@ T byteswap(const T &val) {
 
 template <typename T>
 void readValue(std::ifstream &in, T &val) {
-	static_assert(std::is_same_v<T, bool> || std::is_same_v<T, std::string>
-					  || std::is_same_v<T, long long>,
-				  "Unexpected type received");
+	static_assert(
+		std::is_same_v<
+			T,
+			bool> || std::is_same_v<T, std::string> || std::is_same_v<T, long long>,
+		"Unexpected type received");
 
 	uint32_t type_id{};
 	uint8_t	 is_null{};
@@ -108,10 +97,12 @@ void readValue(std::ifstream &in, T &val) {
 
 
 template <typename T>
-void writeValue(std::ofstream &out, T &val) {
-	static_assert(std::is_same_v<T, bool> || std::is_same_v<T, std::wstring>
-					  || std::is_same_v<T, long long>,
-				  "Unexpected type received");
+void writeValue(std::ofstream &out, T val) {
+	static_assert(
+		std::is_same_v<
+			T,
+			bool> || std::is_same_v<T, std::wstring> || std::is_same_v<T, long long>,
+		"Unexpected type received");
 
 	uint32_t type_id{};
 	uint8_t	 is_null{};
@@ -158,7 +149,7 @@ void writeValue(std::ofstream &out, T &val) {
 }
 
 
-bool ASIONDIConfig::save() {
+bool LocalSettings::save() {
 
 	auto orgSettingsFolder =
 		File::getSpecialLocation(
@@ -198,7 +189,7 @@ bool ASIONDIConfig::save() {
 	return true;
 }
 
-bool ASIONDIConfig::load() {
+bool LocalSettings::load() {
 
 	auto orgSettingsFolder =
 		File::getSpecialLocation(
@@ -212,7 +203,6 @@ bool ASIONDIConfig::load() {
 
 	if (!appSettingsFolder.isDirectory())
 		appSettingsFolder.createDirectory();
-	// assert(appSettingsFolder.isDirectory());
 	File settingsFile(
 		appSettingsFolder.getChildFile("settings.bin").getFullPathName());
 	if (!settingsFile.exists())
@@ -236,18 +226,3 @@ bool ASIONDIConfig::load() {
 
 	return true;
 }
-
-#ifdef _WINDOWS
-std::string ASIONDIConfig::regGetStringValue(HKEY hKey, LPCSTR lpSubKey) {
-	DWORD size = 0;
-	RegGetValueA(hKey, NULL, lpSubKey, RRF_RT_REG_SZ, NULL, NULL, &size);
-
-	if (size > 0) {
-		std::unique_ptr<byte> s(new byte[size]);
-		RegQueryValueExA(hKey, lpSubKey, NULL, NULL, (BYTE *)s.get(), &size);
-		return std::string{reinterpret_cast<char *>(s.get())};
-	}
-
-	return "";
-}
-#endif // _WINDOWS
