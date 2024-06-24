@@ -121,6 +121,6 @@ void LicensePanel::show() {
 }
 
 
-void LicensePanel::setLicense(std::string license) {
+void LicensePanel::setLicense(const std::string &license) {
 	licenseEditor.setText(license);
 }
