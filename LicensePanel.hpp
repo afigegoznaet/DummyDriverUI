@@ -10,10 +10,11 @@ public:
 	void paint(Graphics &g) override;
 	void buttonClicked(Button *buttonThatWasClicked) override;
 	void show();
-	void setLicense(std::string license);
+	void setLicense(const std::string &license);
 
 	//==========================================================================
 	std::function<void(std::string)> onLicenseActivate{nullptr};
+
 
 private:
 	Label	   panelTitleLabel{"licensePanelTitle", "License key"};
