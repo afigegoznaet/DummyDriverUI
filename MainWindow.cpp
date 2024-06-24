@@ -53,8 +53,10 @@ MainWindow::MainWindow(Component &parent) : homeTab(*this), sysTray{parent} {
 	licensePanel.setWantsKeyboardFocus(true);
 	licensePanel.onLicenseActivate = [this](std::string license) {
 		licenseCheckScreen.setVisible(true);
+		config.licenseActive = false;
 		checkLicenseExpired(license);
 	};
+	licensePanel.setLicense(config.licenseKey);
 	addChildComponent(licensePanel);
 
 	//  Initialise component size
@@ -96,6 +98,7 @@ void MainWindow::checkLicenseExpired(std::string license) {
 		config.licenseActive = true;
 		config.expiry = resp.expiry;
 		config.lastOnlineKeyCheckSec = epoch_seconds();
+		config.licenseKey = license;
 		config.save();
 		setApplicationUnlocked(true);
 	}

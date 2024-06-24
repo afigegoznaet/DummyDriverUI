@@ -11,7 +11,7 @@ template <typename T>
 T byteswap(const T &val) {
 	constexpr size_t sizeInBytes = sizeof(T);
 	uint8_t			 newval[sizeInBytes];
-	const uint8_t *	 byteRepr = reinterpret_cast<const uint8_t *>(&val);
+	const uint8_t	*byteRepr = reinterpret_cast<const uint8_t *>(&val);
 	for (size_t i = 0; i < sizeInBytes; i++) {
 		newval[i] = byteRepr[sizeInBytes - i - 1];
 	}
@@ -20,11 +20,9 @@ T byteswap(const T &val) {
 
 template <typename T>
 void readValue(std::ifstream &in, T &val) {
-	static_assert(
-		std::is_same_v<
-			T,
-			bool> || std::is_same_v<T, std::string> || std::is_same_v<T, long long>,
-		"Unexpected type received");
+	static_assert(std::is_same_v<T, bool> || std::is_same_v<T, std::string>
+					  || std::is_same_v<T, long long>,
+				  "Unexpected type received");
 
 	uint32_t type_id{};
 	uint8_t	 is_null{};
@@ -98,11 +96,9 @@ void readValue(std::ifstream &in, T &val) {
 
 template <typename T>
 void writeValue(std::ofstream &out, T val) {
-	static_assert(
-		std::is_same_v<
-			T,
-			bool> || std::is_same_v<T, std::wstring> || std::is_same_v<T, long long>,
-		"Unexpected type received");
+	static_assert(std::is_same_v<T, bool> || std::is_same_v<T, std::wstring>
+					  || std::is_same_v<T, long long>,
+				  "Unexpected type received");
 
 	uint32_t type_id{};
 	uint8_t	 is_null{};
@@ -111,10 +107,12 @@ void writeValue(std::ofstream &out, T val) {
 	if constexpr (std::is_same_v<T, bool>) {
 		type_id = 1;
 	}
+
 	if constexpr (std::is_same_v<T, std::wstring>) {
 		type_id = 10;
-		size = val.length() * 2;
+		size = val.length() * sizeof(val[0]);
 	}
+
 	if constexpr (std::is_same_v<T, long long>) {
 		type_id = 4;
 	}
@@ -160,7 +158,6 @@ bool LocalSettings::save() {
 		orgSettingsFolder.createDirectory();
 
 	auto appSettingsFolder = orgSettingsFolder.getChildFile(APP_NAME);
-
 	if (!appSettingsFolder.isDirectory())
 		appSettingsFolder.createDirectory();
 	// assert(appSettingsFolder.isDirectory());

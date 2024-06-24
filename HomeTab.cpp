@@ -129,7 +129,7 @@ void HomeTab::onConfigLoad(const std::string &newSource,
 	ndiSourceCombo.clear(NotificationType::dontSendNotification);
 
 	ndiSourceCombo.addItem(newSource, 1);
-	ndiSourceCombo.setSelectedItemIndex(1);
+	ndiSourceCombo.setSelectedItemIndex(0);
 
 	ndiOutput.setText(newOutput);
 }
