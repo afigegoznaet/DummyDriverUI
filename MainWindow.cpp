@@ -10,7 +10,7 @@ auto epoch_seconds = [] {
 		.count();
 };
 
-MainWindow::MainWindow(Component &parent) : homeTab(parent), sysTray{parent} {
+MainWindow::MainWindow(Component &parent) : homeTab(*this), sysTray{parent} {
 
 	//==========================================================================
 	// Set up UI elements
@@ -47,6 +47,7 @@ MainWindow::MainWindow(Component &parent) : homeTab(parent), sysTray{parent} {
 	addChildComponent(licenseCheckScreen);
 
 	config.load();
+	homeTab.onConfigLoad(config.ndiInputDeviceName, config.ndiOutputDeviceName);
 	//  License activation panel
 	licensePanel.setAlwaysOnTop(true);
 	licensePanel.setWantsKeyboardFocus(true);
@@ -81,16 +82,22 @@ void MainWindow::checkLicenseExpired(std::string license) {
 		|| epoch_seconds() > (config.lastOnlineKeyCheckSec
 							  + 60 * 60 * 24 * ONLINE_CHECK_DAYS_INTERVAL)) {
 		auto resp = validate_license_key(license, getMachineUUID());
+		licenseCheckScreen.setVisible(false);
 		if (resp.errorCode != 0) {
-			licenseCheckScreen.setVisible(false);
 			AlertWindow::showMessageBox(MessageBoxIconType::WarningIcon,
 										"Activation failed", resp.error);
 			return;
 		}
+
+		AlertWindow::showMessageBox(MessageBoxIconType::InfoIcon,
+									"Activation succeeded",
+									"Driver successfully activated");
+
 		config.licenseActive = true;
 		config.expiry = resp.expiry;
 		config.lastOnlineKeyCheckSec = epoch_seconds();
 		config.save();
+		setApplicationUnlocked(true);
 	}
 }
 
@@ -146,6 +153,8 @@ void MainWindow::setApplicationUnlocked(bool shouldBeUnlocked) {
 }
 
 //==============================================================================
-// void MainWindow::loadProgramSettings() {}
-
-// void MainWindow::saveProgramSettings() {}
+void MainWindow::onAcceptClick(std::string newSource, std::string newOutput) {
+	config.ndiInputDeviceName = std::move(newSource);
+	config.ndiOutputDeviceName = std::move(newOutput);
+	config.save();
+}

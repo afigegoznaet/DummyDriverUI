@@ -24,10 +24,9 @@ public:
 	//==========================================================================
 	void setApplicationUnlocked(bool shouldBeUnlocked);
 
-private:
-	// void saveProgramSettings();
-	// void loadProgramSettings();
+	void onAcceptClick(std::string newSource, std::string newOutput);
 
+private:
 	void checkLicenseExpired(std::string license);
 
 	//==========================================================================

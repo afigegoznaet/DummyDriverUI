@@ -7,7 +7,7 @@ using namespace std::string_literals;
 constexpr auto KEYGEN_BASE_URL = "https://api.keygen.sh/v1/accounts/";
 constexpr auto ACCOUNT_ID = "72d3fb49-6c80-4694-9175-73a2e1ee4add";
 constexpr auto PRODUCT_ID = "bf38932a-fb89-463f-ba17-e0fcca1d69e4";
-constexpr auto PRODUCT_VERSION_MAJOR = 1;
+constexpr auto PRODUCT_VERSION_MAJOR = 2;
 
 size_t wfun(char *contents, size_t size, size_t nmemb, void *userp) {
 	((std::string *)userp)->append((char *)contents, size * nmemb);
@@ -69,19 +69,17 @@ RESTCallResponse validate_license_key(const std::string license_key,
 	nlohmann::json data = jsonResp["data"];
 	nlohmann::json meta = jsonResp["meta"];
 
-	std::cerr << data.dump() << std::endl;
-	std::cerr << std::endl << std::endl;
-	std::cerr << meta.dump() << std::endl;
-	if (!meta.contains("valid") || !meta["valid"].get<bool>()) {
 
-		result.errorCode = -1;
-		result.error =
-			std::format("Details: {}\nLicense status: {}",
-						meta["detail"].get<std::string>(),
-						data["attributes"]["status"].get<std::string>());
+	//	if (!meta.contains("valid") || !meta["valid"].get<bool>()) {
 
-		return result;
-	}
+	//		result.errorCode = -1;
+	//		result.error =
+	//			std::format("Details: {}\nLicense status: {}",
+	//						meta["detail"].get<std::string>(),
+	//						data["attributes"]["status"].get<std::string>());
+
+	//		return result;
+	//	}
 
 	// Check expiry
 	if (data.contains("attributes") && data["attributes"].contains("expiry")

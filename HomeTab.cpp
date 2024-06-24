@@ -1,7 +1,8 @@
 #include "HomeTab.hpp"
+#include "MainWindow.hpp"
 #include "AppLookAndFeel.hpp"
 
-HomeTab::HomeTab(Component &parent) : parent_{parent} {
+HomeTab::HomeTab(MainWindow &parent) : parent_{parent} {
 	//==========================================================================
 	// Set up NDI Source selector
 	ndiSourceLabel.setFont(AppLookAndFeel::defaultFontSize);
@@ -86,36 +87,29 @@ void HomeTab::buttonClicked(Button *button) {
 		if (newOutput.isEmpty())
 			newOutput = defaultOut;
 
-		String oldOuptut = ""; // driver->getNDIOutputName();
-
 		String rawNewSource =
 			ndiSourceCombo.getItemText(ndiSourceCombo.getSelectedItemIndex());
 
-		String newSource = rawNewSource.replace("(" + oldOuptut + ")",
-												"(" + newOutput + ")", false);
+		parent_.onAcceptClick(rawNewSource.toStdString(),
+							  newOutput.toStdString());
 
-		// driver->onAcceptClick(newSource.toStdString(),
-		// newOutput.toStdString());
-
-		parent_.setVisible(false);
 	} else if (button == &cancelButton) {
-		parent_.setVisible(false);
 	}
 }
 
 void HomeTab::sourceListChanged(std::vector<std::string> updatedSourcesMap) {
 	MessageManagerLock msgLock;
 
-	ndiSourceCombo.clear(NotificationType::dontSendNotification);
-
-
-	for (const auto &input : updatedSourcesMap)
-		ndiSourceCombo.addItem(input, ndiSourceCombo.getNumItems() + 1);
-
 	String oldSource =
 		ndiSourceCombo.getItemText(ndiSourceCombo.getSelectedItemIndex());
 	const auto selectedPosition = std::find(
 		updatedSourcesMap.cbegin(), updatedSourcesMap.cend(), oldSource);
+
+
+	ndiSourceCombo.clear(NotificationType::dontSendNotification);
+
+	for (const auto &input : updatedSourcesMap)
+		ndiSourceCombo.addItem(input, ndiSourceCombo.getNumItems() + 1);
 
 	if (selectedPosition == updatedSourcesMap.cend()) {
 		ndiSourceCombo.setSelectedId(0);
@@ -124,5 +118,18 @@ void HomeTab::sourceListChanged(std::vector<std::string> updatedSourcesMap) {
 
 	auto selectedIndex =
 		std::distance(updatedSourcesMap.cbegin(), selectedPosition);
+
 	ndiSourceCombo.setSelectedItemIndex(static_cast<int>(selectedIndex));
+}
+
+void HomeTab::onConfigLoad(const std::string &newSource,
+						   const std::string &newOutput) {
+	MessageManagerLock msgLock;
+
+	ndiSourceCombo.clear(NotificationType::dontSendNotification);
+
+	ndiSourceCombo.addItem(newSource, 1);
+	ndiSourceCombo.setSelectedItemIndex(1);
+
+	ndiOutput.setText(newOutput);
 }

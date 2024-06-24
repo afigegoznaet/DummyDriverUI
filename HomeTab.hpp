@@ -3,11 +3,13 @@
 #include <NDISourceFinder.hpp>
 #include "SearchBox.hpp"
 
+class MainWindow;
+
 class HomeTab : public Component,
 				public Button::Listener,
 				NDISourceFinder::Listener {
 public:
-	explicit HomeTab(Component &parent);
+	explicit HomeTab(MainWindow &parent);
 
 	//==========================================================================
 	void resized() override;
@@ -15,6 +17,8 @@ public:
 
 	//==========================================================================
 	void buttonClicked(Button *button) override;
+	void onConfigLoad(const std::string &newSource,
+					  const std::string &newOutput);
 
 private:
 	void sourceListChanged(std::vector<std::string> updatedSourcesMap) override;
@@ -33,7 +37,7 @@ private:
 	TextButton cancelButton{"CANCEL"};
 
 	NDISourceFinder finder_{};
-	Component	   &parent_;
+	MainWindow	   &parent_;
 
 	//==========================================================================
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HomeTab)
