@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'ZAssets' in project 'DriverUI'
+➜ Explicit dependency on target 'ZERO_CHECK' in project 'DriverUI'
+Target 'ZERO_CHECK' in project 'DriverUI' (no dependencies)

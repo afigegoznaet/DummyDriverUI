@@ -14,6 +14,7 @@ public:
 
 	//==========================================================================
 	std::function<void(std::string)> onLicenseActivate{nullptr};
+	std::function<void()>			 onLicenseDeactivate{nullptr};
 
 
 private:

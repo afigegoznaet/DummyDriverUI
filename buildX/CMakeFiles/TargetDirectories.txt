@@ -1,0 +1,4 @@
+/Users/verapostanciuc/workspace/DummyDriverUI/buildX/CMakeFiles/DriverUI.dir
+/Users/verapostanciuc/workspace/DummyDriverUI/buildX/CMakeFiles/ZAssets.dir
+/Users/verapostanciuc/workspace/DummyDriverUI/buildX/CMakeFiles/ALL_BUILD.dir
+/Users/verapostanciuc/workspace/DummyDriverUI/buildX/CMakeFiles/ZERO_CHECK.dir

@@ -2,7 +2,6 @@
 #include <JuceHeader.h>
 #include <future>
 #include "AboutTab.hpp"
-// #include "AppLookAndFeel.hpp"
 #include "HomeTab.hpp"
 #include "AppSysTrayComponent.hpp"
 #include "LicensePanel.hpp"
@@ -28,6 +27,7 @@ public:
 
 private:
 	void checkLicenseExpired(std::string license);
+	void deactivate();
 
 	//==========================================================================
 	std::future<void> sourceWaiter;

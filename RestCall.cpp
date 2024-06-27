@@ -2,12 +2,15 @@
 #include <RestCall.hpp>
 #include <JuceHeader.h>
 #include <json.hpp>
-using namespace std::string_literals;
+using namespace std::string_view_literals;
 
-constexpr auto KEYGEN_BASE_URL = "https://api.keygen.sh/v1/accounts/";
-constexpr auto ACCOUNT_ID = "72d3fb49-6c80-4694-9175-73a2e1ee4add";
-constexpr auto PRODUCT_ID = "bf38932a-fb89-463f-ba17-e0fcca1d69e4";
+constexpr auto KEYGEN_BASE_URL = "https://api.keygen.sh/v1/accounts/"sv;
+constexpr auto ACCOUNT_ID = "72d3fb49-6c80-4694-9175-73a2e1ee4add"sv;
+constexpr auto PRODUCT_ID = "bf38932a-fb89-463f-ba17-e0fcca1d69e4"sv;
 constexpr auto PRODUCT_VERSION_MAJOR = 2;
+constexpr auto BEARER_TOKEN =
+	"dev-9ee22e4aa9e8ca711b214f73797aa10a0c107464016b7d26f6fa8a1519ae5798v3"sv;
+
 
 size_t wfun(char *contents, size_t size, size_t nmemb, void *userp) {
 	((std::string *)userp)->append((char *)contents, size * nmemb);
@@ -21,10 +24,8 @@ RESTCallResponse validate_license_key(const std::string license_key,
 									  const std::string fingerprint) {
 	RESTCallResponse result{};
 
-	// auto			   curl = curl_easy_init();
-	// struct curl_slist *headers = nullptr;
 	auto   parameter_handling = URL::ParameterHandling::inPostData;
-	URL	   url(std::string{} + KEYGEN_BASE_URL + ACCOUNT_ID
+	URL	   url(std::string{KEYGEN_BASE_URL} + std::string{ACCOUNT_ID}
 			   + "/licenses/actions/validate-key");
 	String extra_headers =
 		"Content-Type: application/vnd.api+json\nAccept: application/vnd.api+json";
@@ -69,7 +70,7 @@ RESTCallResponse validate_license_key(const std::string license_key,
 	nlohmann::json data = jsonResp["data"];
 	nlohmann::json meta = jsonResp["meta"];
 
-
+	// TODO - reenable after the "valid" section is fixed
 	//	if (!meta.contains("valid") || !meta["valid"].get<bool>()) {
 
 	//		result.errorCode = -1;
@@ -115,5 +116,45 @@ RESTCallResponse validate_license_key(const std::string license_key,
 		return result;
 	}
 
+	return result;
+}
+
+
+// Deactivate this machine for a given license key
+RESTCallResponse deactivate_machine(const std::string fingerprint) {
+	RESTCallResponse result;
+
+	auto   parameter_handling = URL::ParameterHandling::inAddress;
+	URL	   url(std::string{KEYGEN_BASE_URL} + std::string{ACCOUNT_ID}
+			   + "/machines/" + fingerprint);
+	String headers = "Authorization: Bearer " + std::string{BEARER_TOKEN};
+	String header2 = "Content-Type: application/vnd.api+json";
+	String header3 = "Accept: application/vnd.api+json";
+	headers.append("\n", 2);
+	headers.append(header2, header2.length());
+	headers.append("\n", 2);
+	headers.append(header3, header3.length());
+	const auto options =
+		URL::InputStreamOptions(parameter_handling).withExtraHeaders(headers);
+
+	auto   stream = url.createInputStream(options);
+	String response = stream->readString();
+	std::cerr << response << std::endl;
+	if (!nlohmann::json::accept(response.toStdString())) {
+		std::stringstream ss;
+
+		result.errorCode = -1;
+		result.error =
+			std::format("Failed to parse json: {}", response.toStdString());
+		return result;
+	}
+
+	auto jsonResp = nlohmann::json::parse(response.toStdString());
+	if (jsonResp.contains("errors")) {
+		auto err = jsonResp["errors"].front();
+		result.errorCode = -1;
+		result.error = std::format("{}", err["detail"].get<std::string>());
+		return result;
+	}
 	return result;
 }

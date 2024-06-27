@@ -51,11 +51,10 @@ MainWindow::MainWindow(Component &parent) : homeTab(*this), sysTray{parent} {
 	//  License activation panel
 	licensePanel.setAlwaysOnTop(true);
 	licensePanel.setWantsKeyboardFocus(true);
-	licensePanel.onLicenseActivate = [this](std::string license) {
-		licenseCheckScreen.setVisible(true);
-		config.licenseActive = false;
+	licensePanel.onLicenseActivate = [this](auto license) {
 		checkLicenseExpired(license);
 	};
+	licensePanel.onLicenseDeactivate = [this] { deactivate(); };
 	licensePanel.setLicense(config.licenseKey);
 	addChildComponent(licensePanel);
 
@@ -73,8 +72,31 @@ MainWindow::MainWindow(Component &parent) : homeTab(*this), sysTray{parent} {
 		licensePanel.show();
 }
 
+void MainWindow::deactivate() {
+	licenseCheckScreen.setVisible(true);
+	auto res = deactivate_machine(getMachineUUID());
+	licenseCheckScreen.setVisible(true);
+	config.licenseActive = false;
+	config.expiry = "";
+	config.lastOnlineKeyCheckSec = epoch_seconds();
+	config.licenseKey = "";
+	config.save();
+	if (res.errorCode != 0) {
+		AlertWindow::showMessageBox(MessageBoxIconType::WarningIcon,
+									"Deactivation failed", res.error);
+	}
+
+	AlertWindow::showMessageBox(MessageBoxIconType::InfoIcon,
+								"Deactivation succeeded", "Driver deactivated");
+
+	licenseCheckScreen.setVisible(false);
+
+	setApplicationUnlocked(false);
+}
 
 void MainWindow::checkLicenseExpired(std::string license) {
+	licenseCheckScreen.setVisible(true);
+	config.licenseActive = false;
 	if (config.licenseActive && !(config.expiry.size() == 0)
 		&& !isDatePastToday(config.expiry)) {
 		config.licenseActive = false;
@@ -88,7 +110,6 @@ void MainWindow::checkLicenseExpired(std::string license) {
 		if (resp.errorCode != 0) {
 			AlertWindow::showMessageBox(MessageBoxIconType::WarningIcon,
 										"Activation failed", resp.error);
-			return;
 		}
 
 		AlertWindow::showMessageBox(MessageBoxIconType::InfoIcon,

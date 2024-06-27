@@ -1,0 +1,11 @@
+Target dependency graph (4 targets)
+Target 'ALL_BUILD' in project 'DriverUI'
+➜ Explicit dependency on target 'DriverUI' in project 'DriverUI'
+➜ Explicit dependency on target 'ZAssets' in project 'DriverUI'
+➜ Explicit dependency on target 'ZERO_CHECK' in project 'DriverUI'
+Target 'DriverUI' in project 'DriverUI'
+➜ Explicit dependency on target 'ZAssets' in project 'DriverUI'
+➜ Explicit dependency on target 'ZERO_CHECK' in project 'DriverUI'
+Target 'ZAssets' in project 'DriverUI'
+➜ Explicit dependency on target 'ZERO_CHECK' in project 'DriverUI'
+Target 'ZERO_CHECK' in project 'DriverUI' (no dependencies)

@@ -100,8 +100,8 @@ void LicensePanel::buttonClicked(Button *button) {
 	if (button == &deactivateButton) {
 		auto input = licenseEditor.getText().toUpperCase();
 
-		if (onLicenseActivate != nullptr)
-			onLicenseActivate("");
+		if (onLicenseDeactivate != nullptr)
+			onLicenseDeactivate();
 
 		setVisible(false);
 		// driver->onDeactivateClick();
