@@ -107,10 +107,12 @@ void writeValue(std::ofstream &out, T val) {
 	if constexpr (std::is_same_v<T, bool>) {
 		type_id = 1;
 	}
+
 	if constexpr (std::is_same_v<T, std::wstring>) {
 		type_id = 10;
 		size = val.length() * sizeof(val[0]);
 	}
+
 	if constexpr (std::is_same_v<T, long long>) {
 		type_id = 4;
 	}
