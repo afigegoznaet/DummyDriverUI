@@ -11,13 +11,6 @@ constexpr auto PRODUCT_VERSION_MAJOR = 2;
 constexpr auto BEARER_TOKEN =
 	"dev-9ee22e4aa9e8ca711b214f73797aa10a0c107464016b7d26f6fa8a1519ae5798v3"sv;
 
-
-size_t wfun(char *contents, size_t size, size_t nmemb, void *userp) {
-	((std::string *)userp)->append((char *)contents, size * nmemb);
-
-	return size * nmemb;
-}
-
 // Verify a license key using the validate-key action
 // https://keygen.sh/docs/api/licenses/#licenses-actions-validate-key
 RESTCallResponse validate_license_key(const std::string license_key,
